@@ -11,8 +11,10 @@ function receiveOsc(address, value) {
 	console.log("received OSC: " + address + ", " + value);
 }
 
+var socket;
+
 function setupOsc(oscPortIn, oscPortOut) {
-	var socket = io.connect('http://127.0.0.1', { port: 8081, rememberTransport: false });
+	socket = io.connect('http://127.0.0.1', { port: 8085, rememberTransport: false });
 	socket.on('connect', function() {
 		socket.emit('config', {	
 			server: { port: oscPortIn,  host: '127.0.0.1'},
