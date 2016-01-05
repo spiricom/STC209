@@ -13,11 +13,6 @@ io.sockets.on('connection', function (socket) {
     });
   });
   socket.on("message", function (obj) {
-	if (obj.length > 1) {
-		oscClient.send(obj[0], obj[1]);
-	}
-	else {
-		oscClient.send(obj[0]);
-	}
+	oscClient.send.apply(oscClient, obj);
   });
 });

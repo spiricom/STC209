@@ -11,6 +11,10 @@ function receiveOsc(address, value) {
 	console.log("received OSC: " + address + ", " + value);
 }
 
+function sendOsc(address, value) {
+	socket.emit('message', [address].concat(value));
+}
+
 var socket;
 
 function setupOsc(oscPortIn, oscPortOut) {
