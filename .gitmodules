@@ -1,0 +1,6 @@
+[submodule "physics-libraries/toxiclibsjs"]
+	path = physics-libraries/toxiclibsjs
+	url = https://github.com/hapticdata/toxiclibsjs.git
+[submodule "physics-libraries/The-Nature-of-Code-Examples-p5.js"]
+	path = physics-libraries/The-Nature-of-Code-Examples-p5.js
+	url = https://github.com/shiffman/The-Nature-of-Code-Examples-p5.js.git
