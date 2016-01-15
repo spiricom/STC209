@@ -4,7 +4,7 @@ var offset = 0;
 function setup() {
 
   // Sets the screen to be 720 pixels wide and 400 pixels high
-  createCanvas(1500, 500);
+  createCanvas(800, 400);
   background(0);
   stroke(255);
   strokeWeight(5);
@@ -53,8 +53,4 @@ endShape();
 
 
 offset += 0.01;
-}
-
-function mouseClicked() {
-save('lissajous.png'); 
 }
