@@ -1,37 +1,26 @@
+var connect_to_this_ip = '127.0.0.1'
+
 function setup() {
-	createCanvas(100, 100);
-	setupOsc(3333, 3334);
+    createCanvas(400, 400);
+    setupOsc(3333, 3334);
 }
 
 function draw() {
-
+  background(0);
+  ellipse(mouseX, mouseY, 100, 100);
+  sendOsc('/mousePos', [mouseX/width, mouseY/height]);
 }
+
 
 function receiveOsc(address, value) {
-	console.log("received OSC: " + address + ", " + value);
+    console.log("received OSC: " + address + ", " + value);
+/*
+    if (address == '/myColor')
+  {
+   mydot = [255 - value, value, 0];
+  }
+*/
 }
 
-function sendOsc(address, value) {
-	socket.emit('message', [address].concat(value));
-}
 
-var socket;
 
-function setupOsc(oscPortIn, oscPortOut) {
-	socket = io.connect('http://127.0.0.1', { port: 8085, rememberTransport: false });
-	socket.on('connect', function() {
-		socket.emit('config', {	
-			server: { port: oscPortIn,  host: '127.0.0.1'},
-			client: { port: oscPortOut, host: '127.0.0.1'}
-		});
-	});
-	socket.on('message', function(msg) {
-		if (msg[0] == '#bundle') {
-			for (var i=2; i<msg.length; i++) {
-				receiveOsc(msg[i][0], msg[i].splice(1));
-			}
-		} else {
-			receiveOsc(msg[0], msg.splice(1));
-		}
-	});
-}
