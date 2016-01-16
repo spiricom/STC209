@@ -9,41 +9,38 @@ rows = [line.split() for line in f]
 f.close()
 
 list = []
+count_dupl = 0
+for row in rows:
+	if not row in list:
+		if row[0] == '<line':
+			list.append(row)
+	else:
+		count_dupl = count_dupl + 1
+
+print str(count_dupl)+" duplicate lines detected and removed."
+
+
 count = 0
-for row in rows:
-	if not row in list:
-
-		if row[0] == '<line':
-			count = count + 1
-
-		list.append(row)
-
-
-list = []
-
-i = 0
 print "var mesh = [",
-for row in rows:
+for row in list:
+	print "[",
+	for word in row:
+		#print word,
+		if word.split('\"')[0]=='x1=':
+			sys.stdout.write(word.split('\"')[1])
+			print ",",
+		if word.split('\"')[0]=='y1=':
+			sys.stdout.write(word.split('\"')[1])
+			print ",",
+		if word.split('\"')[0]=='x2=':
+			sys.stdout.write(word.split('\"')[1])
+			print ",",
+		if word.split('\"')[0]=='y2=':
+			sys.stdout.write(word.split('\"')[1])
 
-	if not row in list:
+	count = count + 1
 
-		if row[0] == '<line':
-			print "[",
-			j = 0
-
-			for word in row[5:9]:
-
-				#print word.split("\"")[1],
-				sys.stdout.write(word.split("\"")[1])
-				if(j<3):
-					print ",",
-				j = j + 1;
-
-			if (i<count-1):
-				print "],",
-			else:
-				print "] ];";
-
-			i = i + 1
-		
-		list.append(row)
+	if(count < len(list)):
+		print "],",
+	else:
+		print"] ];"
