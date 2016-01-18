@@ -6,6 +6,12 @@ var y_shift = 150;
 var x_scale = 1;
 var y_scale = 1;
 
+/*
+var x_spacing = 5;
+var y_spacing = 5;
+var i0 = 10;
+*/
+
 // Aatish Bhatia 01/16/2016 (@aatishb)
 // Adapted from Dan Shiffman's Nature of Code
 // http://natureofcode.com/book/chapter-5-physics-libraries/
@@ -119,4 +125,38 @@ function draw() {
 }
   
 
+/*
+// NOT YET IMPLEMENTED  
+// Move the nearest particle by dragging the mouse
+function mousePressed() {
+  for(var i=0; i<lines.length; i++){
+
+    var x1 = lines[i][0];
+    var y1 = lines[i][1];
+    var x2 = lines[i][2];
+    var y2 = lines[i][3];
+
+    var i1 = points.indexOf(str(x1)+':'+str(y1));
+    var i2 = points.indexOf(str(x2)+':'+str(y2));
+
+
+      if(abs(particles[i1].x-mouseX)<x_spacing && abs(particles[i1].y-mouseY)<y_spacing){
+        i0 = i1;
+      }
+      else if(abs(particles[i2].x-mouseX)<x_spacing && abs(particles[i2].y-mouseY)<y_spacing){
+        i0 = i2;
+      }
+
+
+    
+  }
+
+  particles[i0].lock();
+  particles[i0].x = mouseX;
+  particles[i0].y = mouseY;
+  particles[i0].unlock();
+
+} 
+
+*/
  
