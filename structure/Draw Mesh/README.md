@@ -1,8 +1,7 @@
 How to import Mesh from SVG
 ==============
 
-This will take you through how to import an SVG vector image into a P5 sketch
-**Currently `parsesvg.py` only supports the [line and polyline](https://www.w3.org/TR/SVG/shapes.html) SVG elements.**
+This will take you through how to import an SVG vector image into a P5 sketch. **Currently `parsesvg.py` only supports the [line and polyline](https://www.w3.org/TR/SVG/shapes.html) SVG elements. To be expanded as needed.**
 
 Parsing SVG
 --------------
