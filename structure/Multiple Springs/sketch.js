@@ -65,7 +65,7 @@ function draw() {
     }
   }
   
-  particles[num_particles-1].display();
+  //particles[num_particles-1].display();
   
   // Move the second one according to the mouse
   if (mouseIsPressed) {

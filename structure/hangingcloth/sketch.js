@@ -44,7 +44,8 @@ function setup() {
 
       // Anything we make, we have to add into the physics world
       physics.addParticle(particles[i][j]);
-  
+
+ 
       if(i>0){
         // Make a spring connecting both Particles
         springs[i-1][j]=new VerletSpring2D(particles[i-1][j],particles[i][j],x_spacing,stiffness);
@@ -55,6 +56,8 @@ function setup() {
         springs[i][j-1]=new VerletSpring2D(particles[i][j-1],particles[i][j],y_spacing,stiffness);
         physics.addSpring(springs[i][j-1]);
       }
+
+
     }
   }
 
@@ -104,10 +107,10 @@ function draw() {
       }
     }
 
-    particles[i0][j0].lock();
+    particles[i0][j0].lock();    // play with commenting this out
     particles[i0][j0].x = mouseX;
     particles[i0][j0].y = mouseY;
-    particles[i0][j0].unlock();
+    particles[i0][j0].unlock();  // and this out
 
   } 
 }
