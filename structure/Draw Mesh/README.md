@@ -5,7 +5,7 @@ This will take you through how to import an SVG vector image into a P5 sketch. *
 
 Parsing SVG
 --------------
-- Open SVG file in adobe illustrator or equivalent. 
+- Open SVG file in Adobe Illustrator or equivalent. 
 - Fit canvas to image: *Object > Artboards > Fit to Artwork Bounds*
 - Trace outline of image. In Illustrator, select the entire image, then go to *Window > Pathfinder* and click the *Outline* button
 - Save as SVG file
