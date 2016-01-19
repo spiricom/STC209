@@ -18,7 +18,8 @@ python parsesvg.py pattern.svg > output.txt
 
 Displaying in P5
 --------------
-- Copy the `mesh` data structure from `output.txt` into `sketch.js`. `mesh` is an array containing the line segments in the image, stored in the form:
+- Copy the `mesh` data structure from `output.txt` into `sketch.js`. 
+- `mesh` is an array containing the line segments in the image, stored in the form:
 ```
 var mesh = [[x0,y0,x1,y1],[x1,y1,x2,y2],....];
 ```
