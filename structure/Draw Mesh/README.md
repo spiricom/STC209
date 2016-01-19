@@ -12,7 +12,6 @@ Parsing SVG
 - In terminal, navigate to the folder and run:
 ```
 python parsesvg.py pattern.svg > output.txt
-
 ```
 - This runs a python script that parses the SVG file, filtering out duplicate lines, and pipes output to `output.txt`
 
