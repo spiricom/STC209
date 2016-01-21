@@ -47,3 +47,8 @@ function makeShape(size){
   endShape();
 
 }
+
+
+function mouseClicked(){
+  save('myCanvas.jpg');
+}
