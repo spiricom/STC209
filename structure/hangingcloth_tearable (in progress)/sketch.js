@@ -1,3 +1,5 @@
+// BUG: for some reason the cloth remains hanging even when top strands are all torn
+
 // Aatish Bhatia 01/14/2016 (@aatishb)
 // Built starting from Dan Shiffman's Nature of Code
 // http://natureofcode.com/book/chapter-5-physics-libraries/
@@ -8,12 +10,14 @@ var physics;
 
 var particles = [];
 var springs = [];
+var lines = [];
+
 var cloth_particles_wide = 15;
 var cloth_particles_tall = 15;
 
 var cloth_width = 200;
 var cloth_height = 200;
-var stiffness = 0.15;
+var stiffness = 0.2;
 
 var x_spacing = cloth_width/cloth_particles_wide;
 var y_spacing = cloth_height/cloth_particles_tall;
@@ -37,33 +41,41 @@ function setup() {
 
     particles[i] = [];
     springs[i] = [];
+    lines[i] = [];
 
     for(var j = 0; j<cloth_particles_tall; j++){
     
+      //lines[i][j] = 0;
       particles[i][j] = new Particle(new Vec2D(width/2-cloth_width/2+i*x_spacing,j*y_spacing));
 
       // Anything we make, we have to add into the physics world
       physics.addParticle(particles[i][j]);
 
+      if(j==0){
+        particles[i][0].lock();
+      }
  
       if(i>0){
         // Make a spring connecting both Particles
         springs[i-1][j]=new VerletSpring2D(particles[i-1][j],particles[i][j],x_spacing,stiffness);
         physics.addSpring(springs[i-1][j]);
+        lines[i-1][j] = 1;
       }
       if(j>0){
         // Make a spring connecting both Particles
         springs[i][j-1]=new VerletSpring2D(particles[i][j-1],particles[i][j],y_spacing,stiffness);
         physics.addSpring(springs[i][j-1]);
-      }
+        lines[i][j-1] = 1;
+    }
 
 
     }
   }
 
   // Lock corners in place
-  particles[0][0].lock();
-  particles[cloth_particles_wide-1][0].lock();
+  //particles[0][0].lock();
+  //particles[cloth_particles_wide-1][0].lock();
+
 
 }
 
@@ -85,12 +97,31 @@ function draw() {
       // Display the particles
       //particles[i][j].display();
       
-      if(i>0){
-        line(particles[i-1][j].x,particles[i-1][j].y,particles[i][j].x,particles[i][j].y);
+      if(i>0 && lines[i-1][j]==1){
+        var x0 = particles[i-1][j].x;
+        var y0 = particles[i-1][j].y;
+        var x1 = particles[i][j].x;
+        var y1 = particles[i][j].y;
+        line(x0,y0,x1,y1);
+        if(dist(x0,y0,x1,y1)>1.3*x_spacing)
+        {
+          physics.removeSpring(springs[i-1][j]);
+          lines[i-1][j]=0;
+        }
       }
-      if(j>0){
-        line(particles[i][j-1].x,particles[i][j-1].y,particles[i][j].x,particles[i][j].y);
+      if(j>0 && lines[i][j-1]==1){
+        var x0 = particles[i][j-1].x;
+        var y0 = particles[i][j-1].y;
+        var x1 = particles[i][j].x;
+        var y1 = particles[i][j].y;
+        line(x0,y0,x1,y1);
+        if(dist(x0,y0,x1,y1)>1.3*y_spacing)
+        {
+          physics.removeSpring(springs[i][j-1]);
+          lines[i][j-1]=0;
+        }
       }
+    
     }
   }
   

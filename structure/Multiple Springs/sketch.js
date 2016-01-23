@@ -8,6 +8,7 @@ var physics;
 var particles = [];
 var spring = [];
 var num_particles = 20;
+var num_springs = num_particles - 1;
 var length = 200;
 var stiffness = 0.2;
 
@@ -15,7 +16,7 @@ var stiffness = 0.2;
 function setup() {
   createCanvas(640,360);
 
-  var spacing = length/num_particles;
+  var spacing = length/(num_springs);
 
   // Initialize the physics
   physics=new VerletPhysics2D();

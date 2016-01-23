@@ -7,6 +7,7 @@ var physics;
 
 var p1;
 var p2;
+var spacing = 200;
 
 function setup() {
   createCanvas(640,360);
@@ -20,12 +21,12 @@ function setup() {
   
   // Make two particles
   p1 = new Particle(new Vec2D(width/2,20));
-  p2 = new Particle(new Vec2D(width/2+160,20));
+  p2 = new Particle(new Vec2D(width/2+spacing,20));
   // Lock one in place
   p1.lock();
 
   // Make a spring connecting both Particles
-  var spring=new VerletSpring2D(p1,p2,160,0.01);
+  var spring=new VerletSpring2D(p1,p2,spacing,0.01);
 
   // Anything we make, we have to add into the physics world
   physics.addParticle(p1);
@@ -37,7 +38,6 @@ function draw() {
 
   // Update the physics world
   physics.update();
-
   background(51);
 
   // Draw a line between the particles
