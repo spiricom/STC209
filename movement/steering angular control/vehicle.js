@@ -4,29 +4,29 @@
 // http://natureofcode.com
 
 
-function Vehicle(x,y,k1x,k2x,k1y,k2y) {
-  this.acceleration = createVector(0,0);
-  this.velocity = createVector(0,-2);
+function Vehicle(x,y,v,k1,k2) {
+  this.angularacceleration = 0;
+  this.angularvelocity = 0;
+  this.angle = 0;
   this.position = createVector(x,y);
+  this.speed = v;
   this.r = 6;
 
   // Integrate acceleration
   this.update = function() {
-    this.velocity.add(this.acceleration);
-    this.position.add(this.velocity);
+    this.angularvelocity += this.angularacceleration;
+    this.angle += this.angularvelocity;
+    this.angle %= (2*PI)
+    this.position.add(createVector(this.speed*cos(this.angle),this.speed*sin(this.angle)));
     // Reset acceleration to 0 each cycle
-    this.acceleration.mult(0);
+    this.angularacceleration = 0;
   }
 
   this.steer = function(target) {
-
-    // k1_x*(x_t-x) - k2_x*v_t
-    // k1_y*(x_t-x) - k2_y*v_t
-
     var positionError = p5.Vector.sub(target,this.position);  // A vector pointing from the location to the target
-    var control = createVector(k1x*positionError.x-k2x*this.velocity.x,k1y*positionError.y-k2y*this.velocity.y);
-
-    this.acceleration = control;
+    var target_angle = positionError.heading();
+    print("Heading to: "+target_angle);
+    this.angularacceleration = k1*(target_angle-this.angle) - k2*this.angularvelocity;
   }
 
 
@@ -41,13 +41,12 @@ function Vehicle(x,y,k1x,k2x,k1y,k2y) {
       
   this.display = function() {
     // Draw a triangle rotated in the direction of velocity
-    var theta = this.velocity.heading() + PI/2;
     fill(127);
     stroke(200);
     strokeWeight(1);
     push();
     translate(this.position.x,this.position.y);
-    rotate(theta);
+    rotate(this.angle + PI/2);
     beginShape();
     vertex(0, -this.r*2);
     vertex(-this.r, this.r*2);
