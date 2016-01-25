@@ -9,14 +9,18 @@
 
 // i.e. we control the motion of the agent with a force in the x direction and a force in the y direction
 
-var numtargets = 3;
+//*****************************************
+// Play with changing the following parameters:
+var numtargets = 4;
 var targetradius = 30;
 var k1x = 0.1,
     k2x = 1,
     k1y = 0.1,
     k2y = 1;
+//*****************************************
 
-var v; // vehicle
+
+var v; // stores the 'vehicle' object
 var flag = 0; // Used to alternate between 'input mode' and 'simulation mode'
 var targets = []; // Stores targets
 var currenttarget = 0; // Stores current target
@@ -49,17 +53,17 @@ function draw() {
     v.steer(targets[currenttarget]);
     v.update();
 
-    // if target is reached, aim for the next target
+    // target is reached if agent enters targetradius/2 (this threshold can be changed below)
     if(v.within(targets[currenttarget],targetradius/2)){
       if(currenttarget<numtargets-1){
-        currenttarget++;
+        currenttarget++; // if target is reached, aim for the next target
       }
-      else{noLoop();} //if final target is reached, stop the program
+      else{noLoop();} // if final target is reached, stop the program
     }
 
   }
 
-  // show the vehicle
+  // display the vehicle
   v.display();
 
 };
