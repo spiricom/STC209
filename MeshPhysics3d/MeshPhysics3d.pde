@@ -9,145 +9,143 @@ import java.util.List;
 
 VerletPhysics physics;
 ToxiclibsSupport gfx;
-List<ParticleMesh> meshes;
+ParticleMesh mesh;
 
-int DIM=20;
-int REST_LENGTH = 100;
+// Parameters
 float STRENGTH = 0.99;
+float scaleAmt = 3;;
+float rotateLerpSpeed = 0.05;
+
+// global variables
+float strength;
+int idxClosest;
+boolean selectionScreen;
+boolean isMouseMoving;
+float fx, fy, fz;
+float rotX, rotY;
+float rotateLerpSpeed_;
+ArrayList<Integer> selectedParticles;
 
 
-// display flat mesh + select points to pin
-//  - select 3 points, and use sliders to select force 
+// different forces for different points? 
 // slider for strength
 // restarting physics button
 // export stl
 
-int normalLength;
-boolean doUpdate=true;
-boolean isWireframe=true;
-
 
 void setup() {
-  size(800,800,P3D);
-  meshes=new ArrayList<ParticleMesh>();
-  gfx=new ToxiclibsSupport(this);
-  initPhysics();
+  size(800, 800, P3D);
+  gfx = new ToxiclibsSupport(this);
+  physics=new VerletPhysics();
+  initMesh();
   setupGui();
+  goToSelectionMode();
+  initPhysics();
+}
+
+void goToSelectionMode() {
+  selectionScreen = true;
+  selectedParticles = new ArrayList<Integer>();
+  initMesh();
+  initPhysics();
+  rotateLerpSpeed_ = 0;
+}
+
+void goToSimulation() {
+  selectionScreen = false;
+  initPhysics();
+}
+
+void update() {
+  physics.update();
+  
+  if (selectionScreen && isMouseMoving) {
+    isMouseMoving = false;    
+    float minDist = width+height;
+    
+    for (int i=0; i<mesh.particles.size(); i++) {
+      float d = dist((mouseX-width/2)/scaleAmt, (mouseY-height/2)/scaleAmt, mesh.particles.get(i).x, mesh.particles.get(i).y);
+      if (d < minDist) {
+        minDist = d;
+        idxClosest = i;
+      }
+    }
+    if (minDist > 10) {
+      idxClosest = -1;
+    }
+  }
+
+  if (isMouseMoving && pmouseX==mouseX && pmouseY==mouseY) {
+    isMouseMoving = false;
+  }
 }
 
 void draw() {
-  if (doUpdate) {
-    physics.update();
-  }
+  update();
+  
   background(255);
   noStroke();
   
   pushMatrix();
+  translate(width*0.5, height*0.5, 0);
   
-  translate(width*0.5,height*0.5,100);
-  rotateX(map(mouseY,0,height,-PI,PI));
-  rotateY(map(mouseX,0,width,-PI,PI));
-  scale(2);
-  lights();
- 
- 
-  for(ParticleMesh m : meshes) {
-    
-    /*
-    for (VerletParticle p : m.particles) {
-      stroke(0);
-      fill(0);
-      pushMatrix();
-      translate(p.x, p.y, p.z);
-    
-      ellipse(0, 0, 5, 5);
-      popMatrix();
-    }
-    */
-    for (VerletSpring s : m.springs) {
-      stroke(0,50);
-      noFill();
-      pushMatrix();
-      line(s.a.x, s.a.y, s.a.z, s.b.x, s.b.y, s.b.z);
-      popMatrix();
-    }
-
-    /*
-    if (isWireframe) {
-      //stroke(m.col.toARGB());
-      stroke(0);
-      noFill();
-    } else {
-      fill(m.col.toARGB());
-      noStroke();
-    }
-    m.buildMesh();
-    gfx.mesh(m.mesh,true,normalLength);
-  */  
+  if (!selectionScreen) {
+    rotateLerpSpeed_ = lerp(rotateLerpSpeed_, rotateLerpSpeed, 0.05);
+    rotX = lerp(rotX, map(mouseY,0,height,-PI,PI), rotateLerpSpeed_);
+    rotY = lerp(rotY, map(mouseX,0,width,-PI,PI), rotateLerpSpeed_);
+    rotateX(rotX);
+    rotateY(rotY);
   }
- 
   
+  scale(scaleAmt);
   
+  // draw springs
+  for (VerletSpring s : mesh.springs) {
+    stroke(0,50);
+    noFill();
+    pushMatrix();
+    line(s.a.x, s.a.y, s.a.z, s.b.x, s.b.y, s.b.z);
+    popMatrix();
+  }
+
+  // draw selected particles
+  for (int idx : selectedParticles) {
+    fill(0, 255, 0);
+    pushMatrix();
+    translate(mesh.particles.get(idx).x, mesh.particles.get(idx).y, mesh.particles.get(idx).z);
+    sphere(2);
+    popMatrix();
+  }
+  if (idxClosest != -1) {
+    fill(255, 0, 0);
+    pushMatrix();
+    translate(mesh.particles.get(idxClosest).x, mesh.particles.get(idxClosest).y, mesh.particles.get(idxClosest).z);
+    sphere(2);
+    popMatrix();
+  }
+
   popMatrix();
-  
-  cp5.draw();
-  
+    
+  if (selectionScreen) {  
+    cp5.draw();
+  }
 }
 
 void keyPressed() {
-  switch(key) {
-  case ' ':
-    TriangleMesh export=new TriangleMesh();
-    for(ParticleMesh m : meshes) {
-      export.addMesh(m.mesh);
-    }
-    export.saveAsSTL(sketchPath("catanary.stl"));
-    break;
-  case 'n':
-    normalLength=(normalLength==0) ? 10 : 0;
-    break;
-  case 'u':
-    doUpdate=!doUpdate;
-    break;
-  case 'v':
-    saveVoxelized();
-    break;
-  case 'r':
-    initPhysics();
-    break;
-  case 'w':
-    isWireframe=!isWireframe;
-    break;
+  if (key==' ') {
+    if (selectionScreen)  goToSimulation();
+    else goToSelectionMode();
   }
 }
 
-void initPhysics() {
-  physics=new VerletPhysics();
-  //physics.addBehavior(new GravityBehavior(new Vec3D(0,0,0.5)));
-  physics.setWorldBounds(new AABB(new Vec3D(0,0,0),500));
-  
-  
-  
-  meshes.clear();
-  //ParticleMesh m1 = new ParticleMesh(DIM,REST_LENGTH,STRENGTH,TColor.CYAN);
-  ParticleMesh m1 = new ParticleMesh(REST_LENGTH,STRENGTH,TColor.CYAN);
-  meshes.add(m1);  
+void mousePressed() {
+  if (selectionScreen) {
+    if (idxClosest != -1) {
+      selectedParticles.add(idxClosest);
+    }
+  }
+}
 
-  // pin corners of 1st mesh in space
-//  m1.getParticleAt(new Vec2D(0,0)).lock();
-//  m1.getParticleAt(new Vec2D(DIM-1,0)).lock();
-//  m1.getParticleAt(new Vec2D(DIM-1,DIM-1)).lock();
-//  m1.getParticleAt(new Vec2D(0,DIM-1)).lock();
-//  m1.getParticleAt(new Vec2D(DIM/2,DIM/2)).lock();
-//  //for (int i=0; i<50; i++)
-    //m1.particles.get(i).lock();
-  
-  
-  ConstantForceBehavior cfb = new ConstantForceBehavior(new Vec3D(0, 0, 0.1));
-  m1.particles.get(100).addBehavior(cfb);
-  
-//  ConstantForceBehavior cfb = new ConstantForceBehavior(new Vec3D(0, 0, 0.5));
-  //cfb.apply(m1.getParticleAt(new Vec2D(0,0)));
-  //physics.addBehavior(cfb);
- 
+void mouseMoved() {
+  isMouseMoving = true;
 }

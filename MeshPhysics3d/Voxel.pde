@@ -6,9 +6,7 @@
 
 void saveVoxelized() {
   WETriangleMesh combined=new WETriangleMesh();
-  for(ParticleMesh m : meshes) {
-    combined.addMesh(m.mesh);
-  }
+  combined.addMesh(mesh.mesh);
   int res=160;
   float iso=0.1;
   int wall=2;
