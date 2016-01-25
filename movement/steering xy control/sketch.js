@@ -11,10 +11,10 @@
 
 var numtargets = 3;
 var targetradius = 30;
-var k1x = 0.01,
-    k2x = 0.1,
-    k1y = 0.01,
-    k2y = 0.1;
+var k1x = 0.1,
+    k2x = 1,
+    k1y = 0.1,
+    k2y = 1;
 
 var v; // vehicle
 var flag = 0; // Used to alternate between 'input mode' and 'simulation mode'

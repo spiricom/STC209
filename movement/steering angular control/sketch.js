@@ -1,5 +1,5 @@
 // Modifying Daniel Shiffman's Vehicle Class http://natureofcode.com
-
+ 
 // Click the mouse to choose the targets
 // The agent will then steer to the targets
 
@@ -8,10 +8,10 @@
 
 // i.e. the agent always moves at a constant speed and we can apply a control torque to turn it
 
-var numtargets = 3;
+var numtargets = 4;
 var targetradius = 30;
 var k1 = 0.1,
-    k2 = 0.1,
+    k2 = 1,
     speed = 5;
 
 var v;

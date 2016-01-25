@@ -10,6 +10,7 @@ function Vehicle(x,y,v,k1,k2) {
   this.angle = 0;
   this.position = createVector(x,y);
   this.speed = v;
+  this.target_angle_previous_value = 0;
   this.r = 6;
 
   // Integrate acceleration
@@ -25,8 +26,22 @@ function Vehicle(x,y,v,k1,k2) {
   this.steer = function(target) {
     var positionError = p5.Vector.sub(target,this.position);  // A vector pointing from the location to the target
     var target_angle = positionError.heading();
-    print("Heading to: "+target_angle);
+    var prev_angle = this.target_angle_previous_value;
+
+    if(abs(target_angle-prev_angle)>PI){
+      if(target_angle<prev_angle){
+        target_angle += 2*PI;
+      }
+      else if(target_angle>prev_angle){
+        target_angle -= 2*PI;
+      }
+    }
+
+    target_angle %= 2*PI;
+
+    print("Heading to: "+round(target_angle*180/PI*100)/100+ " degrees / " +round(target_angle*100)/100 +" radians");
     this.angularacceleration = k1*(target_angle-this.angle) - k2*this.angularvelocity;
+    this.target_angle_previous_value = target_angle;
   }
 
 
