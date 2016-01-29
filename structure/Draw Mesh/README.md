@@ -8,12 +8,11 @@ Parsing SVG
 - Open SVG file in Adobe Illustrator. 
 - Fit canvas to image: *Object > Artboards > Fit to Artwork Bounds*
 - If your image has any curves, select the entire image and navigate to: *Object > Path > Simplify* and chose *Straight Lines*. This should replace all curved segments with straight lines. 
-- Trace outline of image: In Illustrator, select the entire image, then go to *Window > Pathfinder* and click the *Outline* button
-- Save as SVG file. Due to an Illustrator bug, we'll use the following options when saving:
-1) Uncheck "Use artboards" 
-2) Uncheck "Responsive"
-3) Check 'Preserve Illustrator Editing Capabilities' 
-
+- Trace outline of image: In Illustrator, select the entire image, then go to *Window > Pathfinder* and click the *Outline* button.
+- Save as SVG file. To avoid an Illustrator bug that moves the artwork off the screen, use the following options when saving:
+	1) Uncheck "Use artboards" 
+	2) Uncheck "Responsive"
+	3) Check 'Preserve Illustrator Editing Capabilities' 
 - In terminal, navigate to the folder and run:
 ```
 python parsesvg.py pattern.svg > output.txt
