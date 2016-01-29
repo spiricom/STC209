@@ -4,7 +4,7 @@
 // http://natureofcode.com
 
 
-function Vehicle(x,y,v) {
+function Vehicle(x,y,v,k1,k2) {
   this.angularacceleration = 0;
   this.angularvelocity = 0;
   this.angle = 0;
@@ -23,7 +23,7 @@ function Vehicle(x,y,v) {
     this.angularacceleration = 0;
   }
 
-  this.steer = function(target,k1,k2) {
+  this.steer = function(target) {
     var positionError = p5.Vector.sub(target,this.position);  // A vector pointing from the location to the target
     var target_angle = positionError.heading();
     var prev_angle = this.target_angle_previous_value;
@@ -39,7 +39,7 @@ function Vehicle(x,y,v) {
 
     target_angle %= 2*PI;
 
-    //print("Heading to: "+round(target_angle*180/PI*100)/100+ " degrees / " +round(target_angle*100)/100 +" radians");
+    print("Heading to: "+round(target_angle*180/PI*100)/100+ " degrees / " +round(target_angle*100)/100 +" radians");
     this.angularacceleration = k1*(target_angle-this.angle) - k2*this.angularvelocity;
     this.target_angle_previous_value = target_angle;
   }
@@ -56,8 +56,8 @@ function Vehicle(x,y,v) {
       
   this.display = function() {
     // Draw a triangle rotated in the direction of velocity
-    fill(140,240,240);
-    stroke(0,0,255);
+    fill(127);
+    stroke(200);
     strokeWeight(1);
     push();
     translate(this.position.x,this.position.y);

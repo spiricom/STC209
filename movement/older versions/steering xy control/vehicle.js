@@ -4,13 +4,13 @@
 // http://natureofcode.com
 
 
-function Vehicle(x,y) {
+function Vehicle(x,y,k1x,k2x,k1y,k2y) {
   this.acceleration = createVector(0,0);
   this.velocity = createVector(0,-2);
   this.position = createVector(x,y);
   this.maxspeed = Infinity;
   this.maxForce = Infinity;
-  this.r = 5;
+  this.r = 6;
 
   // Integrate acceleration
   this.update = function() {
@@ -22,7 +22,7 @@ function Vehicle(x,y) {
     this.acceleration.mult(0);
   }
 
-  this.steer = function(target,k1x,k2x,k1y,k2y) {
+  this.steer = function(target) {
 
     // k1_x*(x_t-x) - k2_x*v_t
     // k1_y*(x_t-x) - k2_y*v_t
@@ -47,8 +47,8 @@ function Vehicle(x,y) {
   this.display = function() {
     // Draw a triangle rotated in the direction of velocity
     var theta = this.velocity.heading() + PI/2;
-    fill(140,240,240);
-    stroke(0,0,255);
+    fill(127);
+    stroke(200);
     strokeWeight(1);
     push();
     translate(this.position.x,this.position.y);
