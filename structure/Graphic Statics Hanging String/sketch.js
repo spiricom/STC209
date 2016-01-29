@@ -4,9 +4,13 @@ var node2 = new p5.Vector(500,300);
 var node_radius = 20;
 
 var flag = 0; // variable used to drag nodes with mouse
-
 var forces = []; // Array of vectors to store forces
-
+var forcepos = [];
+var y_offset = [];
+var numforces_prev = 0; // Used to keep track of whether forces have changed
+var numforces = 5;
+var weight = 0;
+var changeforce = 0;
 
 function setup() { // Setup is run just once
   createCanvas(1000,600);
@@ -16,7 +20,7 @@ function setup() { // Setup is run just once
   T1xSlider.position(20, 20);
 
   // slider for number of forces acting on string
-  numforcesSlider = createSlider(0, 10, 5);
+  numforcesSlider = createSlider(0, 10, numforces);
   numforcesSlider.position(20, 50);
 
   // slide for weight
@@ -40,16 +44,27 @@ function draw() { // Draw is looped forever
   text("Drag Endpoints to Adjust String", width/4, height-25);
   text("Force Polygon", 3*width/4, height-25);
 
-  var numforces = numforcesSlider.value(); // number of forces set by slider
+  numforces = numforcesSlider.value(); // number of forces set by slider
   var spacing = (node2.x-node1.x)/(numforces+1); // force spacing set to equal intervals between nodes
 
-  // Initialize forces
+  // If number of forces has changes or weight has changes
+  if(numforces != numforces_prev || forceSlider.value() != weight){
+    for (var count = 0;count<numforces; count++){
+      // Re-initialize forces
+      forces[count] = new p5.Vector(0,forceSlider.value());
+    }
+    numforces_prev = numforces;
+    weight = forceSlider.value();
+  }
+
+
+/*
   for (var count = 0;count<numforces; count++){
     forces[count] = new p5.Vector(0,forceSlider.value());
     //  forces[count] = new p5.Vector(0,50*mouseX/width);
     //  forces[count] = new p5.Vector(0,50*(width-abs(mouseX-(node1.x+(count+1)*spacing)))/width);
   }  
-
+*/
 
   // draw nodes at their current position
   noStroke();
@@ -99,7 +114,7 @@ function draw() { // Draw is looped forever
     stroke(255,100);
     strokeWeight(5);
   
-    //Draw string ("funicular polygon") using graphic statics 
+    // Draw string ("funicular polygon") using graphic statics 
   
     // scale the resultant force vector...
     resultant_scale = p5.Vector.mult(resultant,spacing/resultant.x);
@@ -109,11 +124,14 @@ function draw() { // Draw is looped forever
     // Also draw force arrows
     if(count>0){
     line(startx,starty,startx,starty+forces[count-1].y);
+    ellipse(startx,starty+forces[count-1].y,10,10);
+    forcepos[count-1] = new p5.Vector(startx,starty+forces[count-1].y);
+    y_offset[count-1] = starty;
     }
+    
+    // And go to the next chord of the string
     startx += resultant_scale.x;
     starty += resultant_scale.y;
- 
-
 
     // Draw force polygon
     stroke(255);
@@ -142,6 +160,10 @@ function draw() { // Draw is looped forever
    node2.x=mouseX;
    node2.y=mouseY;
   }
+  
+  if(flag ==3){
+    forces[changeforce].y = mouseY - y_offset[changeforce];
+  }
 
   
 }
@@ -156,6 +178,15 @@ function mouseDragged(){
    flag = 2;
   }
 
+  else{
+    for(var count = 0;count<numforces; count++){
+      if(abs(mouseX-forcepos[count].x)<10 && abs(mouseY-forcepos[count].y)<10){
+        flag = 3;
+        changeforce = count;
+      }
+    }
+
+  }
 }
 
 function mouseReleased(){
