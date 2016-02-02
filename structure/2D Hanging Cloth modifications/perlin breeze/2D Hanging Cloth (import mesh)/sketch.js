@@ -33,6 +33,7 @@ var physics;
 var particles = [];
 var springs = [];
 var stiffness = 0.2;
+var perlin_offset = 0;
 
 var points = [];
 var lines = [];
@@ -187,16 +188,34 @@ function initializePhysics(){
 
 
 
+var perlin_offset_x = 0;
+var perlin_offset_y = 0;
+var x_amplitude = 1; //this controls strength of wind in x direction
+var y_amplitude = 1; //this controls strength of wind in y direction
 
 function simulate(){
   
+  // Move all particles according to Perlin Noise
+  for(var i = 0; i<points.length; i++){
+    
+    if (!particles[i].isLocked){
+      var prev_x = particles[i].x;
+      var prev_y = particles[i].y;
+  
+      particles[i].x += map(noise(prev_x/100+perlin_offset_x),0,1,-x_amplitude,x_amplitude);
+      particles[i].y += map(noise(prev_y/100+perlin_offset_y),0,1,-y_amplitude,y_amplitude);
+  
+      perlin_offset_x += 0.01; // this controls rate of variation of wind in x direction
+      perlin_offset_y += 0.01; // this controls rate of variation of wind in y direction
+    }
+  }
+
   // Update the physics world
   physics.update();
 
   background(51);
 
   // This next bit draws lines between the particles
-
   for(var i=0; i<lines.length; i++){
 
     var x1 = lines[i][0];
@@ -208,8 +227,7 @@ function simulate(){
     var i2 = points.indexOf(str(x2)+':'+str(y2));
 
     line(particles[i1].x,particles[i1].y,particles[i2].x,particles[i2].y);
-  
-  
+
   }
   
   
