@@ -1,5 +1,6 @@
 /*
- * AF Visualizer, made with bits of code from P5 examples.
+ * AF Music Visualizer, made with bits of code from P5 examples.
+ * Written 2016/02/06 Adam Finkelstein for STC209.
  */
  
 var innerR = 20;
@@ -93,19 +94,26 @@ function draw() {
   // the first 40% seems most interesting
   var len = round(spectrum.length * 0.4);
   spectrum = spectrum.slice(0,len);
-  
+
+  if (song.isPlaying()) {
+    frame++;
+    phase += 0.01;
+  } else {
+    // clear out the spectrum if nothing is playing
+    for (var i = 0; i < len; i++) {
+      spectrum[i] = 0;
+    }
+  }
   spectra.push(spectrum);
   drawSpectra();
-  phase += 0.01;
-  frame++;
 }
 
 function mousePressed() {
   if (song.isPlaying()) {
     song.stop();
   } else {
-    var d = floor(song.duration()-10);
-    var p = random(10,d);
+    var d = song.duration();
+    var p = random(10,d-30); // choose random spot in song to jump into
     song.jump(p);
   }
 }
